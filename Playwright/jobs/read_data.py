@@ -1,9 +1,10 @@
 from configparser import ConfigParser
 import pandas as pd
 import os
-
+from pathlib import Path
+root_path = Path(__file__).parent.parent.parent
 con = ConfigParser()
-con.read('Playwright/jobs/app.properties')
+con.read(f'{root_path}/Playwright/jobs/app.properties')
 
 class Read:
 

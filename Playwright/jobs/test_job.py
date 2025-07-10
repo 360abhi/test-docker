@@ -23,7 +23,7 @@ def getDf(jobs:list) -> pd.DataFrame:
 def getJobs():
     with sync_playwright() as p:
         logger = setup_logger()
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         home = Home(page,logger)
         home.goto_url(Read.URL)
