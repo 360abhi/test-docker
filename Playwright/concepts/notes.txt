@@ -1,0 +1,76 @@
+| Selenium             | Playwright (`page`) |
+| -------------------- | ------------------- |
+| `driver.get(url)`    | `page.goto(url)`    |
+| `driver.current_url` | `page.url`          |
+| `driver.title`       | `page.title()`      |
+
+
+| Selenium                               | Playwright                                            |
+| -------------------------------------- | ----------------------------------------------------- |
+| `driver.find_element(By.ID, "id")`     | `page.locator("#id")`                                 |
+| `find_element(By.CLASS_NAME, "class")` | `page.locator(".class")`                              |
+| `find_element(By.NAME, "name")`        | `page.locator('[name="name"]')`                       |
+| `find_element(By.XPATH, "//div")`      | `page.locator("//div")`                               |
+| `find_elements(...)`                   | `page.locator("selector").all()` (or loop `.locator`) |
+
+| Selenium                        | Playwright (`page`)                      |
+| ------------------------------- | ---------------------------------------- |
+| `element.send_keys("abc")`      | `page.fill("selector", "abc")`           |
+| `element.click()`               | `page.click("selector")`                 |
+| `element.clear()`               | `page.fill("selector", "")`              |
+| `element.get_attribute("attr")` | `page.get_attribute("selector", "attr")` |
+| `element.text`                  | `page.text_content("selector")`          |
+
+| Selenium                               | Playwright                              |
+| -------------------------------------- | --------------------------------------- |
+| `WebDriverWait(driver, 10).until(...)` | **Playwright auto-waits for elements!** |
+| `time.sleep(3)`                        | `page.wait_for_timeout(3000)` *(in ms)* |
+| `ExpectedConditions.element_to_be...`  | `page.wait_for_selector("selector")`    |
+| Wait for navigation                    | `page.wait_for_url("**/dashboard")`     |
+
+| Selenium                    | Playwright                                          |
+| --------------------------- | --------------------------------------------------- |
+| `driver.switch_to.alert`    | `page.on("dialog", lambda dialog: dialog.accept())` |
+| `alert.accept()`            | `dialog.accept()` (in handler)                      |
+| Switch frame                | `frame = page.frame(name="frameName")`              |
+| Switch back to main content | `page.main_frame()` *(auto-used)*                   |
+
+| Selenium                          | Playwright                         |
+| --------------------------------- | ---------------------------------- |
+| `driver.save_screenshot("a.png")` | `page.screenshot(path="a.png")`    |
+| Element screenshot                | `locator.screenshot(path="b.png")` |
+
+| Selenium                       | Playwright                                 |
+| ------------------------------ | ------------------------------------------ |
+| `assert "Dashboard" in title`  | `assert "Dashboard" in page.title()`       |
+| `assert element.text == "abc"` | `assert page.text_content("#id") == "abc"` |
+
+| Selenium                          | Playwright (`context.new_page()`) |
+| --------------------------------- | --------------------------------- |
+| `driver.window_handles`           | `browser_context.pages`           |
+| `driver.switch_to.window(handle)` | `page = context.new_page()`       |
+| Open new tab                      | `page = context.new_page()`       |
+
+
+switch pages:
+page.goto('https://realpython.github.io/fake-jobs/')
+        context = page.context
+        with context.expect_page() as new_page_info:
+            page.click("(//a[.='Learn'])[1]")
+        new_page = new_page_info.value
+        print(f"New page url {new_page.url}")
+        print(f"Old page url {page.url}")
+
+from playwright.sync_api import sync_playwright
+
+def setup_browser():
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        page = browser.new_page()
+        return page,browser
+
+checks:
+self.page.wait_for_selector(self.find_jobs_btn, state="visible")
+expect(browser).to_have_url("https://www.saucedemo.com/inventory.html")
+expect(browser.locator(".inventory_item")).to_be_visible()
+expect(browser.locator("h3[data-test='error']")).to_contain_text("locked out")

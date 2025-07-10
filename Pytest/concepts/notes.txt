@@ -1,0 +1,105 @@
+🏷️ 2. Naming Conventions
+This is mostly about clarity + Pytest discovery.
+
+Element	Convention	Example
+Test file	test_*.py or *_test.py	test_auth.py
+Test function	test_*	test_valid_login()
+Test class	class Test*	class TestLoginSuite:
+Test method	def test_*	def test_with_invalid_pwd
+
+What are setup and teardown?
+****They’re special functions that run automatically before and after each test (or test class/session/etc.),
+used to:
+
+Setup → Prepare test environment (e.g., open browser, connect to DB)
+
+Teardown → Clean up after the test (e.g., close browser, delete temp files)
+
+🧪 Other Variants 
+Scope	Use with
+setup_method()	Runs before each method
+setup_class()	Runs once before all in class
+setup_module()	Runs before tests in a file
+setup_function()	For tests not in a class
+
+How It Works:
+1. @pytest.mark.parametrize decorator:
+ Takes two arguments:
+ A string of parameter names (comma-separated).
+ A list of tuples where each tuple contains a set of input values.
+2. Test function:
+ The parameters are passed to the test function, which runs once for each tuple in the
+list.
+
+
+# Fixtures Scope
+Scopes can be:
+
+"function" (default): Run for every test.
+
+"class": Run once per test class.
+
+"module": Run once per file.
+
+"session": Run once across the entire test session.
+
+🔧 setup_method / teardown_method (used in classes)
+These are xUnit-style setup/teardown functions. They:
+
+Are part of class-based test style.
+
+Automatically run before and after each method inside the class.
+
+Require you to define your tests inside a class.
+
+✅ When to use:
+When writing class-based tests (e.g., organizing related tests inside a test class).
+
+When your setup/cleanup is simple and doesn't need to be reused in other test files.
+
+
+🧪 @pytest.fixture (fixture-style)
+Fixtures are more flexible and powerful. They:
+
+Work both inside or outside classes.
+
+Can be shared across multiple test files.
+
+Can return objects/data, support parameters, and can even be layered/combined.
+
+Support setup + teardown with yield.
+
+✅ When to use:
+When you want reusable setup logic across different files or test classes.
+
+When you need to pass data or objects into your test functions.
+
+When testing tools like Selenium (e.g., browser object fixture).
+
+When needing modular, scalable test setups.
+
+
+ Why @pytest.fixture is ideal for your project:
+You need to reuse setup logic (like launching a browser, logging in, navigating).
+
+You may want different setups (e.g. logged-in user, logged-out user, mobile viewport).
+
+Fixtures can be used across multiple test files (e.g., test_login.py, test_images.py).
+
+You can easily manage setup + teardown using yield (e.g., open browser, run test, quit).
+
+It's clean, scalable, and more maintainable when your project grows.
+
+use all fixtures in conftest.py
+
+
+## allure
+pytest tes.py --alluredir = allure_results
+allure serve allure_results
+
+for subtests inside the maintest fun:
+use separatre allure.step function with act,exp and call them inside maintest fun
+
+or use subtest [pass inside the argumnet] then use in the function
+ with subtests.test("Thank you message"):
+        assert exp_message.lower() in message.lower(),"Message mismatch"
