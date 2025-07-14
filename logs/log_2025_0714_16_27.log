@@ -1,0 +1,10 @@
+logs/log_2025_0714_16_27.log  2025-07-14 16:28:03,319 - ERROR - Exception moving to https://www.naukri.com/ : Page.wait_for_selector: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("//div[.='Search']") to be visible
+
+logs/log_2025_0714_16_27.log  2025-07-14 16:28:33,322 - ERROR - Exception entering Python Developer: Page.fill: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("xpath=(//input[@class='suggestor-input '])[1]")
+
+logs/log_2025_0714_16_27.log  2025-07-14 16:28:33,424 - INFO - Screenshot appended to Playwright_Test.docx
+logs/log_2025_0714_16_27.log  2025-07-14 16:29:03,426 - ERROR - Failed to scrape job for 1

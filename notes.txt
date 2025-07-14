@@ -1,0 +1,9 @@
+docker build -t image-name . [ . is the path to the dockerfile]
+docker run --rm -v host:containerpath image-name command path
+
+docker run --rm \
+  -v /home/abhishekgod/Documents/testdocker/:/app \
+  play-runner \
+  pytest Playwright/jobs/test_play.py --html=Playwright/jobs/report.html
+
+docker run --rm   -v /home/abhishekgod/Documents/testdocker/:/app   play-runner   python Playwright/jobs/test_job.py 
