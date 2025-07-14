@@ -7,3 +7,19 @@ docker run --rm \
   pytest Playwright/jobs/test_play.py --html=Playwright/jobs/report.html
 
 docker run --rm   -v /home/abhishekgod/Documents/testdocker/:/app   play-runner   python Playwright/jobs/test_job.py 
+
+
+
+////mongo test_job
+
+
+docker exec -it mongo mongosh // to test data
+docker run -d --name mongo -p 27017:27017 mongo
+docker run --rm -v $(pwd):/app --network=host play-runner-image-name
+
+
+| Component       | Role                           | Example                           |
+| --------------- | ------------------------------ | --------------------------------- |
+| **MongoDB**     | Database server (the storage)  | Docker container                  |
+| **mongosh**     | CLI client to interact         | `docker exec -it mongo mongosh`   |
+| **MongoClient** | Python interface (code client) | `from pymongo import MongoClient` |
