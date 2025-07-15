@@ -1,0 +1,148 @@
+=============Day 1==============
+
+A container is a lightweight, standalone, executable unit that includes:
+Your application code
+Runtime (e.g., Node.js, Python, Java)
+System tools and libraries
+Configuration
+
+Hardware (CPU, RAM, Disk)
+├── Hypervisor (e.g., VirtualBox, VMware, Hyper-V)
+│   ├── VM 1
+│   │   ├── Guest OS (Linux/Windows)
+│   │   └── App 1
+│   ├── VM 2
+│   │   ├── Guest OS
+│   │   └── App 2
+
+Every VM runs its own full operating system,
+which makes it heavy and slow to boot. Each VM may be gigabytes in size.
+
+A hypervisor is software that sits between the physical hardware and the VMs.
+It lets you run multiple VMs on a single machine.
+
+
+| Type                | Description               | Example                        |
+| ------------------- | ------------------------- | ------------------------------ |
+| Type 1 (Bare-metal) | Runs directly on hardware | VMware ESXi, Microsoft Hyper-V |
+| Type 2 (Hosted)     | Runs on host OS           | VirtualBox, VMware Workstation |
+
+Docker:ARCH
+
+Hardware
+└── OS (Linux or Windows)
+    └── Docker Engine
+        ├── Container 1 (App + libraries)
+        ├── Container 2 (App + dependencies)
+
+| Feature        | VM                      | Docker Container             |
+| -------------- | ----------------------- | ---------------------------- |
+| Boots in       | Minutes                 | Seconds                      |
+| Size           | GBs                     | MBs                          |
+| OS             | Full Guest OS           | Shares Host OS kernel        |
+| Isolation      | Strong (via hypervisor) | Lightweight (via namespaces) |
+| Performance    | Slower                  | Near-native                  |
+| Portability    | Harder                  | Easier                       |
+| Resource Usage | High                    | Low                          |
+
+Applications:
+
+Microservices: Each service in a different container
+CI/CD: Build, test, and deploy apps in containers
+Dev Environments: Instant setup of project environments
+Cloud Deployments: Docker runs on AWS, GCP, Azure
+Running Legacy Apps: Keep old apps in isolated containers
+
+ARCHITECTURE:
+
++------------------------+
+|  Docker CLI (client)   | 👨‍💻
++------------------------+
+           |
+           | REST API (HTTP, Unix socket)
+           v
++------------------------+
+|   Docker Daemon (dockerd) | 🧠
++------------------------+
+           |
+           v
++------------------------+
+|   Containerd & runc     | ⚙️
++------------------------+
+           |
+           v
++------------------------+
+|     Containers (App)    | 📦
++------------------------+
+
+
+1. 📣 Docker CLI (Client)
+Tool you use in terminal (docker run, docker build)
+Sends commands to Docker Daemon via REST API
+You interact with it directly
+
+2. 🧠 Docker Daemon (dockerd)
+Background process managing:
+
+Containers
+Images
+Networks
+Volumes
+Receives requests from CLI via API
+Responsible for creating and running containers
+
+3. ⚙️ Containerd + runc (Low-level Runtime)
+Containerd: Manages container lifecycle
+runc: Actually spawns containers using Linux namespaces/cgroups
+Think of containerd + runc as the engine room doing the heavy lifting.
+
+4. 📦 Containers
+Running instance of a Docker image
+Isolated via:
+Namespaces (isolation)
+Cgroups (resource limits)
+UnionFS (file layers)
+
+5. 🏭 Docker Images
+Built from a Dockerfile
+Are read-only blueprints
+Each container is a read-write instance of an image
+
+
+docker run nginx
+		|
+Here’s what happens
+		|
+		|
+CLI sends request to dockerd
+Daemon checks local system for nginx image
+If missing, it pulls from Docker Hub
+Creates a container from the image
+Uses runc to spawn container
+Container runs with isolated file system, network, process space
+
+| Component     | Role                        |
+| ------------- | --------------------------- |
+| Docker CLI    | User interface to Docker    |
+| Docker Daemon | Manages images/containers   |
+| Containerd    | Manages running containers  |
+| runc          | Actually creates containers |
+| Images        | Read-only app blueprints    |
+| Containers    | Running app environments    |
+| Registry      | Stores and shares images    |
+
+
+| Command                          | Purpose                             |
+| -------------------------------- | ----------------------------------- |
+| `docker run IMAGE`               | Run a new container                 |
+| `docker ps`                      | List running containers             |
+| `docker ps -a`                   | List all containers                 |
+| `docker images`                  | List local images                   |
+| `docker build -t name .`         | Build image from Dockerfile         |
+| `docker pull IMAGE`              | Download image                      |
+| `docker stop CONTAINER`          | Stop container                      |
+| `docker rm CONTAINER`            | Remove container                    |
+| `docker rmi IMAGE`               | Remove image                        |
+| `docker logs CONTAINER`          | Show container logs                 |
+| `docker exec -it CONTAINER bash` | Execute bash shell inside container |
+
