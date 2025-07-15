@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - app-networks
+    volumes:
+      - ./db:/data/db 
+
+  scraper:
+    build: .
+    container_name: play-scraper
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/app 
+    networks:
+      - app-networks
+    command: pytest Playwright/jobs/test_play.py --html=Playwright/jobs/report.html
+
+networks:
+  app-networks:
+    driver: bridge

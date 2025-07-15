@@ -17,7 +17,7 @@ def browser():
         browser.close()
 
 def log_to_mongo(data: dict):
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient("mongodb://mongo:27017/")
     db = client["playwright_db"]
     collection = db["test_logs"]
     collection.insert_one(data)
