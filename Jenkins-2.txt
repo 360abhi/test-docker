@@ -1,0 +1,137 @@
+ Final Jenkins + Docker + Playwright Pipeline Setup Checklist
+🔧 1. Prerequisites
+✅ Docker installed and running on your host machine
+
+✅ Jenkins running in a Docker container
+
+✅ Your Jenkins container has Docker installed inside (for building Dockerfile inside pipeline)
+
+Bonus Tip: Mount Docker socket from host into Jenkins container:
+
+bash
+Copy
+Edit
+-v /var/run/docker.sock:/var/run/docker.sock
+📁 2. Folder Structure in GitHub Repo
+Your repo should include:
+
+lua
+Copy
+Edit
+.
+├── Dockerfile             <-- For Playwright environment
+├── Jenkinsfile            <-- Jenkins pipeline config
+├── test.sh                <-- Example test script (give execute permission)
+└── (your Playwright project files)
+⚙️ 3. Jenkinsfile Example
+groovy
+Copy
+Edit
+pipeline {
+  agent {
+    dockerfile {
+      filename 'Dockerfile'
+      dir '.'
+    }
+  }
+
+  stages {
+    stage('Run Tests') {
+      steps {
+        sh 'chmod +x test.sh'
+        sh './test.sh'
+      }
+    }
+
+    stage('Archive Result') {
+      steps {
+        archiveArtifacts artifacts: 'result.txt', allowEmptyArchive: true
+      }
+    }
+  }
+}
+🔐 chmod +x is important to avoid Permission denied error.
+
+🐳 4. Dockerfile Example (for Playwright)
+dockerfile
+Copy
+Edit
+FROM mcr.microsoft.com/playwright/python:v1.43.1
+
+WORKDIR /app
+COPY . /app
+
+RUN pip install pytest
+🧪 5. Sample test.sh
+bash
+Copy
+Edit
+#!/bin/bash
+echo "Running Playwright test..." > result.txt
+pytest Playwright/jobs/test_play.py --html=Playwright/jobs/report.html >> result.txt
+✅ Make sure this file is executable:
+
+bash
+Copy
+Edit
+chmod +x test.sh
+🌐 6. Jenkins Job Configuration
+Type: Pipeline
+
+Definition: Pipeline script from SCM
+
+SCM: Git
+
+Repository URL: https://github.com/<your-username>/<repo-name>
+
+Branch: main
+
+Credentials: Not needed for public repo
+
+📦 7. Required Jenkins Plugins
+Make sure you install:
+
+Docker Pipeline
+
+Pipeline
+
+Git Plugin
+
+Pipeline: GitHub Groovy Libraries (optional)
+
+Workspace Cleanup (optional)
+
+You can manage plugins via:
+Jenkins → Manage Jenkins → Plugins → Available
+
+🔁 8. Restart Jenkins (if needed)
+To restart Jenkins:
+
+bash
+Copy
+Edit
+docker restart <jenkins_container_id>
+Or use Jenkins UI:
+http://localhost:8080/restart
+
+🧹 9. Clean Up (Optional)
+Clean unused volumes:
+docker volume prune
+
+List & inspect volumes:
+
+bash
+Copy
+Edit
+docker volume ls  
+docker volume inspect <volume_name>
+🚀 You’re All Set!
+Your pipeline should now:
+
+Pull the code from GitHub
+
+Build Docker image from Dockerfile
+
+Run Playwright test via test.sh
+
+Archive reports or logs
