@@ -20,7 +20,7 @@ pipeline {
       }
     }
   }
-
+}
 //   post {
 //     always {
 //       emailext(
@@ -31,4 +31,4 @@ pipeline {
 //       )
 //     }
 //   }
-}
+
