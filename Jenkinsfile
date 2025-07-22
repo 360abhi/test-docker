@@ -1,34 +1,26 @@
 pipeline {
-  agent {
-    dockerfile {
-      filename 'Dockerfile'    // Uses your Dockerfile
-      dir '.'                  // Context directory (where Dockerfile is)
-      additionalBuildArgs ''
+  agent any
+
+  stages {
+    stage('Sanity Check') {
+      steps {
+        echo '✅ Jenkinsfile is working!'
+        sh 'echo "Current Directory: $(pwd)"'
+        sh 'ls -la'
+      }
+    }
+
+    stage('Simulate Test') {
+      steps {
+        echo '🔍 Running dummy test...'
+        sh 'echo "Pretend this is a test..."'
+      }
     }
   }
 
-  stages {
-    stage('Run Playwright Tests') {
-      steps {
-        sh 'pytest Playwright/jobs/test_play.py --html=Playwright/jobs/report.html'
-      }
-    }
-
-    stage('Archive Report') {
-      steps {
-        archiveArtifacts artifacts: 'Playwright/jobs/report.html', allowEmptyArchive: true
-      }
+  post {
+    always {
+      echo '🎯 Pipeline finished running.'
     }
   }
 }
-//   post {
-//     always {
-//       emailext(
-//         subject: "Playwright Test Report",
-//         body: "Find the attached test report.",
-//         to: "abhishekch360@gmail.com",
-//         attachmentsPattern: 'Playwright/jobs/report.html'
-//       )
-//     }
-//   }
-
