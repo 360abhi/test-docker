@@ -1,26 +1,22 @@
 pipeline {
-  agent any
-
-  stages {
-    stage('Sanity Check') {
-      steps {
-        echo '✅ Jenkinsfile is working!'
-        sh 'echo "Current Directory: $(pwd)"'
-        sh 'ls -la'
-      }
-    }
-
-    stage('Simulate Test') {
-      steps {
-        echo '🔍 Running dummy test...'
-        sh 'echo "Pretend this is a test..."'
-      }
+  agent {
+    dockerfile {
+      filename 'Dockerfile'
+      dir '.'
     }
   }
 
-  post {
-    always {
-      echo '🎯 Pipeline finished running.'
+  stages {
+    stage('Run Playwright Tests') {
+      steps {
+        sh 'pytest Playwright/jobs/test_play.py --html=Playwright/jobs/report.html'
+      }
+    }
+
+    stage('Archive Report') {
+      steps {
+        archiveArtifacts artifacts: 'Playwright/jobs/report.html', allowEmptyArchive: true
+      }
     }
   }
 }
