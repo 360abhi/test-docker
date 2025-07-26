@@ -33,14 +33,14 @@ def test_login(browser):
         expect(browser).to_have_url("https://www.saucedemo.com/inventory.html")
         expect(browser.locator("#shopping_cart_container")).to_be_visible()
 
-        log_to_mongo({
+        print({
             "test": "test_login",
             "status": "passed",
             "timestamp": datetime.datetime.utcnow()
         })
 
     except Exception as e:
-        log_to_mongo({
+        print({
             "test": "test_login",
             "status": "failed",
             "error": str(e),
@@ -57,14 +57,14 @@ def test_login_fail(browser):
 
         expect(browser.locator("h3[data-test='error']")).to_contain_text("locked out")
 
-        log_to_mongo({
+        print({
             "test": "test_login_fail",
             "status": "passed",
             "timestamp": datetime.datetime.utcnow()
         })
 
     except Exception as e:
-        log_to_mongo({
+        print({
             "test": "test_login_fail",
             "status": "failed",
             "error": str(e),
