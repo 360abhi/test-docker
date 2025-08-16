@@ -1,0 +1,25 @@
+pipeline {
+  agent none
+  
+  stages {
+    stage('Checkout SCM') {
+      agent any
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage('Build and Test') {
+      agent {
+        dockerfile {
+          filename 'Dockerfile'
+          dir '.'
+        }
+      }
+      steps {
+        sh 'pytest Playwright/jobs/test_play.py --html=Playwright/jobs/report.html'
+        archiveArtifacts artifacts: 'Playwright/jobs/report.html', allowEmptyArchive: true
+      }
+    }
+  }
+}
